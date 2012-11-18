@@ -1,16 +1,36 @@
 #include <boost/asio.hpp>
+#include <string>
+#include <sstream>
+
+using namespace std;
 using namespace boost;
 
 class ComPort
 {
 public:
-    ComPort(std::string port, unsigned int baud_rate)
+
+    ComPort()
 		:
 		io(),
-		serial(io,port)
+		serial(io)
     {
-        serial.set_option( boost::asio::serial_port_base::baud_rate(baud_rate));
     }
+
+	bool isOpen() const
+	{
+		return serial.is_open();
+	}
+
+	void open(const int port_number)
+	{
+		stringstream
+			str;
+
+		str << "/dev/ttyS" << port_number;
+
+		serial.open(str.str());
+		serial.set_option(boost::asio::serial_port_base::baud_rate(9600));
+	}
 
     void write(const std::string & s)
     {

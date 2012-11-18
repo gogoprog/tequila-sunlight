@@ -10,10 +10,7 @@ using namespace std;
 LightManager
 	lightManager;
 
-static void *callback(
-	enum mg_event event,
-    mg_connection *conn
-	) 
+static void *callback(enum mg_event event, mg_connection *conn) 
 {
     const mg_request_info 
 		* request_info = mg_get_request_info(conn);
@@ -21,7 +18,7 @@ static void *callback(
 	if (event == MG_NEW_REQUEST)
 	{
 		string
-			command(request_info->uri);.
+			command(request_info->uri);
 
 		lightManager.addCommand(command);
 

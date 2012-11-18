@@ -1,11 +1,13 @@
 #include <boost/thread.hpp>
 #include <string>
+#include "com_port.h"
 
 using namespace std;
 
 class LightManager
 {
 public:
+	LightManager();
 	void addCommand(const string & command);
 	void update(const int ticks);
 
@@ -20,7 +22,7 @@ private:
 
 	enum Code
 	{
-		SELECT = 0
+		SELECT = 0,
 		RESET = 13,
 		BLINK_INTERVAL_OFFSET = 48,
 		BLINK = 98,
@@ -29,8 +31,12 @@ private:
 		OFF = 112
 	};
 
+	void initializeComPort();
+
 	boost::mutex
 		commandMutex;
 	vector<string>
 		commands;
+	ComPort
+		comPort;
 };
