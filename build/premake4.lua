@@ -6,7 +6,7 @@ solution "tequila-sunlight"
 	project "tequila-sunlight"
 		kind "ConsoleApp"
 		language "C++"
-		files { "../src/*.h", "../src/*.c*" }
+		files { "../src/daemon/*.h", "../src/daemon/*.c*" }
 		links { "pthread", "boost_system", "boost_thread", "dl" }
 
 		configuration "debug"

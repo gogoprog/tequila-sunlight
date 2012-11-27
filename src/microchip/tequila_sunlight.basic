@@ -1,0 +1,158 @@
+configure uart 2 for 115200 baud 8 data no parity
+
+dim Lamp[0] as pin rd11 for digital output
+dim Lamp[1] as pin rd0 for digital output
+dim Lamp[2] as pin rc13 for digital output
+
+dim rx as pin rf4 for uart input
+dim tx as pin rf5 for uart output
+
+on uart 2 input do gosub ReceiveData
+
+dim LampBlink[3]
+dim LampSequence[3]
+dim LampCurrentTime[3]
+dim LampCurrentSequence[3]
+dim i
+for i = 0 to 2 
+	let LampBlink[i] = 0
+	let LampCurrentTime[i] = 0
+	let LampSequence[i] = 0
+	let Lamp[i] = 0
+	let LampCurrentSequence[i] = 0
+next
+
+dim ShortTime
+dim LongTime
+dim CurrentLamp
+dim CurrentCommand
+dim CurrentData
+
+let ShortTime = 500
+let LongTime = 4000
+let CurrentLamp = 0
+let CurrentCommand = -1
+
+configure timer 1 for 100 ms
+on timer 1 do gosub Update
+			
+while 1 do
+	sleep 5 s
+endwhile
+
+sub ReceiveData
+	let CurrentData = rx
+	
+	print "Received :", CurrentData
+	
+ 	if CurrentData == 13 then
+		print "Reset command"
+		let CurrentCommand = 0
+	else
+	
+		if CurrentCommand == 0 then
+			gosub ChangeCurrentLamp
+			let CurrentCommand = CurrentCommand + 1
+		elseif CurrentCommand == 1 then
+			gosub GetAction
+		elseif CurrentCommand == 2 then
+			gosub GetBlinkPeriod
+		endif
+	
+	endif
+	
+	let tx = CurrentData		
+endsub
+
+sub Update
+	dim i
+	for i = 0 to 2
+	
+		if LampBlink[i] > 0 then
+			let LampCurrentTime[i] = LampCurrentTime[i] + 100
+			if LampBlink[i] == LampCurrentTime[i] then 
+				let Lamp[i] = !Lamp[i]
+				let LampCurrentTime[i] = 0				
+			endif
+		endif
+		
+		if LampSequence[i] > 0 then
+			if LampCurrentSequence[i] == 0 then
+				if Lamp[i] == 0 then
+					let Lamp[i] = 1
+				else				
+					let LampCurrentTime[i] = LampCurrentTime[i] + 100
+					if LampCurrentTime[i] == LongTime then
+						let Lamp[i] = 0
+						let LampCurrentSequence[i] = LampCurrentSequence[i] + 1
+						let LampCurrentTime[i] = 0
+					endif					
+				endif
+			elseif LampCurrentSequence[i] > 0 then			
+				let LampCurrentTime[i] = LampCurrentTime[i] + 100
+				if LampCurrentTime[i] == ShortTime then
+					if Lamp[i] == 0 then
+						let Lamp[i] = 1
+						let LampCurrentTime[i] = 0
+					else
+						let Lamp[i] = 0
+						let LampCurrentTime[i] = 0	
+						let LampCurrentSequence[i] = LampCurrentSequence[i] + 1
+					endif
+				endif
+				if LampCurrentSequence[i] == LampSequence[i] then
+					let LampSequence[i] = 0
+				endif
+			endif
+		endif
+	next
+endsub
+
+sub ResetLamp index
+	let LampCurrentTime[index] = 0
+	let Lamp[index] = 0
+	let LampCurrentSequence[index] = 0
+endsub
+
+sub ChangeCurrentLamp
+	if CurrentData >= 49 && CurrentData <= 51 then		
+		let CurrentLamp = CurrentData - 49
+		print "CurrentLamp is now", CurrentLamp
+	endif
+endsub
+
+sub GetAction
+	dim action
+	let action = CurrentData - 48
+	if action > 0 && action <= 20 then
+		gosub ResetLamp CurrentLamp
+		let LampSequence[CurrentLamp] = action
+		print "Sequence ", action, "started on lamp", CurrentLamp
+		let CurrentCommand = 0
+	elseif CurrentData == 98 then
+		let CurrentCommand = 2
+		print "Preparing blink on lamp", CurrentLamp
+	elseif CurrentData == 110 then	
+		let LampBlink[CurrentLamp] = 0
+        let Lamp[CurrentLamp] = 0
+		print "Blink stopped on lamp", CurrentLamp
+		let CurrentCommand = 0
+    elseif CurrentData == 111 then	
+        print "Lamp on :", CurrentLamp
+        let Lamp[CurrentLamp] = 1
+    elseif CurrentData == 112 then	
+        print "Lamp off :", CurrentLamp
+        let Lamp[CurrentLamp] = 0       
+	endif 	
+endsub
+
+sub GetBlinkPeriod
+	dim base
+	let base = CurrentData - 48
+	if base >= 1 && base <= 20 then
+		gosub ResetLamp CurrentLamp
+		let LampBlink[CurrentLamp] = base * 100
+		print "Blink started on lamp", CurrentLamp, "with period =", base * 100
+		let CurrentCommand = 0
+	endif
+endsub
