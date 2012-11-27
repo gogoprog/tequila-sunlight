@@ -10,27 +10,27 @@ class ComPort
 public:
 
     ComPort()
-		:
-		io(),
-		serial(io)
+        :
+        io(),
+        serial(io)
     {
     }
 
-	bool isOpen() const
-	{
-		return serial.is_open();
-	}
+    bool isOpen() const
+    {
+        return serial.is_open();
+    }
 
-	void open(const int port_number)
-	{
-		stringstream
-			str;
+    void open(const int port_number)
+    {
+        stringstream
+            str;
 
-		str << "/dev/ttyS" << port_number;
+        str << "/dev/ttyS" << port_number;
 
-		serial.open(str.str());
-		serial.set_option(boost::asio::serial_port_base::baud_rate(9600));
-	}
+        serial.open(str.str());
+        serial.set_option(boost::asio::serial_port_base::baud_rate(9600));
+    }
 
     void write(const std::string & s)
     {
@@ -40,11 +40,11 @@ public:
     std::string read()
     {
         char
-			c;
+            c;
         std::string
-			result;
+            result;
 
-		result.reserve( 12 );
+        result.reserve( 12 );
 
         for(;;)
         {
@@ -64,7 +64,7 @@ public:
 
 private:
     boost::asio::io_service
-		io;
+        io;
     boost::asio::serial_port
-		serial;
+        serial;
 };

@@ -55,7 +55,7 @@ void lightJob()
 	}
 }
 
-int main()                              
+int main()
 {
 	boost::thread
 		http_job_thread(httpJob),
