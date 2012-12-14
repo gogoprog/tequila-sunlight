@@ -26,9 +26,31 @@ except:
     print( "Failed to parse json" )
     sys.exit(3)
 
+jobResults = {
+    'blue': 0,
+    'blue_anime': 0,
+    'red': 0,
+    'red_anime': 0,
+    'disabled': 0,
+    'aborted': 0,
+}
+
+def sendCommand( cmd ):
+    try:
+        urllib.request.urlopen( daemonUrl + cmd )
+    except:
+        print("Daemon?")
+
 if buildStatusJson["jobs"]:
     for job in buildStatusJson["jobs"]:
-        print(job['name'] + ":" + job['color'])
+        #print(job['name'] + " : " + job['color'])
+        jobResults[job['color']] = jobResults[job['color']] + 1
+
+    if jobResults['red'] + jobResults['red_anime'] > 0:
+        sendCommand("RED/ON")
+    else:
+        sendCommand("RED/OFF")
+
 else:
     sys.exit(4)
 

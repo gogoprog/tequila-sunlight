@@ -22,6 +22,14 @@ static void *callback(enum mg_event event, mg_connection *conn)
 
         lightManager.addCommand(command);
 
+        mg_printf(
+            conn,
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Type: text/plain\r\n"
+            "Content-Length: 0\r\n"
+            "\r\n"
+            );
+
         return ( void * )1;
     }
     else
