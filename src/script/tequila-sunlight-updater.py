@@ -23,7 +23,7 @@ try:
     response = stream.read().decode("utf-8")
     buildStatusJson = json.loads( response )
 except:
-    print( "Failed to parse json" )
+    print( "[tequila-sunlight] Failed to parse json" )
     sys.exit(3)
 
 jobResults = {
@@ -38,8 +38,9 @@ jobResults = {
 def sendCommand( cmd ):
     try:
         urllib.request.urlopen( daemonUrl + cmd )
+        print("[tequila-sunlight] Sent : " + cmd)
     except:
-        print("Daemon?")
+        print("[tequila-sunlight] Error while sending to daemon")
 
 if buildStatusJson["jobs"]:
     for job in buildStatusJson["jobs"]:
@@ -48,9 +49,13 @@ if buildStatusJson["jobs"]:
 
     if jobResults['red'] + jobResults['red_anime'] > 0:
         sendCommand("RED/ON")
+        sendCommand("GREEN/OFF")
     else:
         sendCommand("RED/OFF")
+        sendCommand("GREEN/ON")
 
+    if jobResults['blue_anime'] + jobResults['red_anime'] > 0:
+        sendCommand("ORANGE/BLINK")
 else:
     sys.exit(4)
 
