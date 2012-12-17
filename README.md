@@ -14,6 +14,6 @@ The devices are :
 The software parts in this project are :
 
     An application to control the microchip running on StickOS
-    A Hudson plugin that analyzes build results and send http requests to a daemon
+    A python script that analyzes build results and send http requests to the daemon
     A daemon that receives http requests and send commands to the microchip through bluetooth
     
