@@ -15,14 +15,13 @@ private:
 
     enum Light
     {
-        RED,
+        GREEN = '1',
         ORANGE,
-        GREEN
+        RED
     };
 
     enum Code
     {
-        SELECT = 0,
         RESET = 13,
         BLINK_INTERVAL_OFFSET = 48,
         BLINK = 98,
@@ -32,6 +31,7 @@ private:
     };
 
     void initializeComPort();
+    void processCommand(const string & command);
 
     boost::mutex
         commandMutex;

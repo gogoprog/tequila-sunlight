@@ -69,8 +69,6 @@ int main()
         http_job_thread(httpJob),
         light_job_thread(lightJob);
 
-    cout << "TequilaSunlight starting..." << endl;
-
     boost::this_thread::yield();
 
     http_job_thread.join();

@@ -26,15 +26,24 @@ public:
         stringstream
             str;
 
-        str << "/dev/ttyS" << port_number;
+        //str << "/dev/ttyS" << port_number;
+        str << "/dev/rfcomm" << port_number;
 
-        serial.open(str.str());
-        serial.set_option(boost::asio::serial_port_base::baud_rate(9600));
+        try
+        {
+            serial.open(str.str());
+            serial.set_option(boost::asio::serial_port_base::baud_rate(9600));
+        }
+        catch( boost::system::system_error )
+        {
+        }
     }
 
-    void write(const std::string & s)
+    ComPort & operator<<( const int code )
     {
-        boost::asio::write(serial,boost::asio::buffer(s.c_str(),s.size()));
+        write(code);
+        boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+        return * this;
     }
 
     std::string read()
@@ -63,6 +72,18 @@ public:
     }
 
 private:
+    void write(const std::string & s)
+    {
+        boost::asio::write(serial,boost::asio::buffer(s.c_str(),s.size()));
+    }
+
+    void write(const int code)
+    {
+        std::string str;
+        str = code;
+        boost::asio::write(serial,boost::asio::buffer(str.c_str(),str.size()));
+    }
+
     boost::asio::io_service
         io;
     boost::asio::serial_port

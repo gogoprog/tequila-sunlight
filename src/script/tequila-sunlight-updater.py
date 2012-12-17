@@ -41,11 +41,11 @@ def sendCommand( cmd ):
         print("[tequila-sunlight] Sent : " + cmd)
     except:
         print("[tequila-sunlight] Error while sending to daemon")
+        sys.exit(5)
 
 if buildStatusJson["jobs"]:
     for job in buildStatusJson["jobs"]:
-        #print(job['name'] + " : " + job['color'])
-        jobResults[job['color']] = jobResults[job['color']] + 1
+        jobResults[job['color']] += 1
 
     if jobResults['red'] + jobResults['red_anime'] > 0:
         sendCommand("RED/ON")
