@@ -54,8 +54,11 @@ if buildStatusJson["jobs"]:
         sendCommand("RED/OFF")
         sendCommand("GREEN/ON")
 
-    if jobResults['blue_anime'] + jobResults['red_anime'] > 0:
-        sendCommand("ORANGE/BLINK")
+    runningJobs = jobResults['blue_anime'] + jobResults['red_anime']
+    if runningJobs > 0:
+        sendCommand("ORANGE/BLINK/" + str(20 - runningJobs))
+    else:
+        sendCommand("ORANGE/OFF")
 else:
     sys.exit(4)
 

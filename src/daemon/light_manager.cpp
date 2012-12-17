@@ -75,6 +75,10 @@ void LightManager::processCommand(const string & command)
         current_lamp;
     Code
         code;
+    int
+        extra_code;
+
+    extra_code = DUMMY;
 
     cout << LOG_PREFIX;
 
@@ -111,12 +115,21 @@ void LightManager::processCommand(const string & command)
         code = OFF;
         cout << "Off" << endl;
     }
+    else if(parts[2] == "BLINK")
+    {
+        code = BLINK;
+
+        extra_code = atoi(parts[3].c_str());
+
+        cout << "Blink " << extra_code << endl;
+
+        extra_code += BLINK_INTERVAL_OFFSET;
+    }
     else
     {
-        // :TODO: BLINK
         cout << "unknown command" << endl;
         return;
     }
 
-    comPort << RESET << current_lamp << code;
+    comPort << RESET << current_lamp << code << extra_code;
 }

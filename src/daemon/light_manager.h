@@ -22,6 +22,7 @@ private:
 
     enum Code
     {
+        DUMMY = 0,
         RESET = 13,
         BLINK_INTERVAL_OFFSET = 48,
         BLINK = 98,
