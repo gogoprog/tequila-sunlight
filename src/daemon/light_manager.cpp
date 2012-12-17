@@ -125,6 +125,12 @@ void LightManager::processCommand(const string & command)
 
         extra_code += BLINK_INTERVAL_OFFSET;
     }
+    else if(parts[2] == "STOP_BLINK")
+    {
+        code = STOP_BLINK;
+
+        cout << "StopBlink " << endl;
+    }
     else
     {
         cout << "unknown command" << endl;
