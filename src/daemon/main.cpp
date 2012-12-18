@@ -49,6 +49,7 @@ void httpJob()
 
     while(1)
     {
+        boost::this_thread::sleep(boost::posix_time::milliseconds(50));
         boost::this_thread::yield();
     }
 }
