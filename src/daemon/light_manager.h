@@ -10,6 +10,8 @@ public:
     LightManager();
     void addCommand(const string & command);
     void update(const int ticks);
+    void setComPort(const string & com_port_string);
+    void initializeComPort();
 
 private:
 
@@ -31,7 +33,6 @@ private:
         OFF = 112
     };
 
-    void initializeComPort();
     void processCommand(const string & command);
 
     boost::mutex
@@ -40,4 +41,6 @@ private:
         commands;
     ComPort
         comPort;
+    string
+        comPortString;
 };

@@ -2,14 +2,16 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #define LOG_PREFIX "[tequila-sunlight-daemon] "
 
 // Public
 
 LightManager::LightManager()
+    :
+    comPortString("/dev/rfcomm0")
 {
-    initializeComPort();
 }
 
 void LightManager::addCommand(const string & command)
@@ -47,25 +49,28 @@ void LightManager::update(const int ticks)
     }
 }
 
-// Private
+void LightManager::setComPort(const string & com_port_string)
+{
+    comPortString = com_port_string;
+}
 
 void LightManager::initializeComPort()
 {
-    for(int i=0; i<4; ++i)
+    cout << LOG_PREFIX << "Opening com port " << comPortString << endl;
+
+    comPort.open(comPortString);
+
+    if(comPort.isOpen())
     {
-        cout << LOG_PREFIX << "Opening com port " << i << endl;
-        comPort.open(i);
-
-        if(comPort.isOpen())
-        {
-            cout << LOG_PREFIX << "Com port " << i << " opened!" << endl;
-
-            return;
-        }
+        cout << LOG_PREFIX << "Com port " << comPortString << " opened!" << endl;
     }
-
-    cout << LOG_PREFIX << "No com port found!" << endl;
+    else
+    {
+        cout << LOG_PREFIX << "Cannot open " << comPortString << endl;
+    }
 }
+
+// Private
 
 void LightManager::processCommand(const string & command)
 {
@@ -98,6 +103,16 @@ void LightManager::processCommand(const string & command)
     {
         current_lamp = ORANGE;
         cout << "Orange ";
+    }
+    else if(parts[1] == "COMPORT")
+    {
+        comPortString = command.substr(8);
+
+        cout << "Com port changed to " << comPortString << endl;
+
+        initializeComPort();
+
+        return;
     }
     else
     {
@@ -137,5 +152,12 @@ void LightManager::processCommand(const string & command)
         return;
     }
 
-    comPort << RESET << current_lamp << code << extra_code;
+    if(comPort.isOpen())
+    {
+        comPort << RESET << current_lamp << code << extra_code;
+    }
+    else
+    {
+        cout << LOG_PREFIX << "Command skipped because com port is not opened." << endl;
+    }
 }

@@ -21,25 +21,24 @@ public:
         return serial.is_open();
     }
 
-    void open(const int port_number)
+    void open(const string port_string)
     {
-        stringstream
-            str;
-
-        //str << "/dev/ttyS" << port_number;
-        str << "/dev/rfcomm" << port_number;
-
         try
         {
-            serial.open(str.str());
+            if(serial.is_open())
+            {
+                serial.close();
+            }
+
+            serial.open(port_string);
             serial.set_option(boost::asio::serial_port_base::baud_rate(9600));
         }
-        catch( boost::system::system_error )
+        catch(boost::system::system_error)
         {
         }
     }
 
-    ComPort & operator<<( const int code )
+    ComPort & operator<<(const int code)
     {
         write(code);
         boost::this_thread::sleep(boost::posix_time::milliseconds(500));

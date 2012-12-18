@@ -63,8 +63,29 @@ void lightJob()
     }
 }
 
-int main()
+void help()
 {
+    cout << "Usage: tequila-sunlight [COMPORT]" << endl;
+    cout << "A daemon that receives http requests and send commands through serial port." << endl;
+}
+
+int main(int argc, char *argv[])
+{
+    if(argc == 2)
+    {
+        if(std::string(argv[1]) == "--help" || std::string(argv[1]) == "-h" )
+        {
+            help();
+            return 0;
+        }
+        else
+        {
+            lightManager.setComPort(argv[1]);
+        }
+    }
+
+    lightManager.initializeComPort();
+
     boost::thread
         http_job_thread(httpJob),
         light_job_thread(lightJob);
@@ -73,4 +94,6 @@ int main()
 
     http_job_thread.join();
     light_job_thread.join();
+
+    return 0;
 }
