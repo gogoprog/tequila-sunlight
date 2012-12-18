@@ -85,7 +85,7 @@ void LightManager::processCommand(const string & command)
 
     extra_code = DUMMY;
 
-    cout << LOG_PREFIX;
+    cout << LOG_PREFIX << "\"" << command << "\" -> ";
 
     boost::split(parts, command, boost::is_any_of("/"));
 

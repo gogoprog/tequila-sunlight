@@ -1,14 +1,19 @@
 #include <iostream>
 #include <boost/thread.hpp>
+#include <boost/program_options.hpp>
 #include <cstdlib>
 #include <string>
 #include "light_manager.h"
 #include "mongoose.h"
 
 using namespace std;
+using namespace boost::program_options;
+namespace po = boost::program_options;
 
 LightManager
     lightManager;
+string
+    httpPort("8080");
 
 static void *callback(enum mg_event event, mg_connection *conn) 
 {
@@ -43,7 +48,7 @@ void httpJob()
     mg_context 
         * context;
     const char 
-        * options[] = { "listening_ports", "8080", NULL };
+        * options[] = { "listening_ports", httpPort.c_str(), NULL };
 
     context = mg_start(&callback, NULL, options);
 
@@ -66,23 +71,46 @@ void lightJob()
 
 void help()
 {
-    cout << "Usage: tequila-sunlight [COMPORT]" << endl;
+    cout << "Usage: tequila-sunlight [OPTIONS]" << endl;
     cout << "A daemon that receives http requests and send commands through serial port." << endl;
 }
 
 int main(int argc, char *argv[])
 {
-    if(argc == 2)
+    po::options_description desc("Allowed options");
+    desc.add_options()
+        ("help,h", "Show help")
+        ("port", po::value<string>(), "Set http port to listen")
+        ("comport", po::value<string>(), "Set default serial port")
+        ;
+    po::variables_map vm;
+
+    try
     {
-        if(std::string(argv[1]) == "--help" || std::string(argv[1]) == "-h" )
-        {
-            help();
-            return 0;
-        }
-        else
-        {
-            lightManager.setComPort(argv[1]);
-        }
+        po::store(po::parse_command_line(argc, argv, desc), vm);
+        po::notify(vm); 
+    }
+    catch(po::error)
+    {
+        cout << "Command line error." << endl;
+        return 2;
+    }
+
+    if (vm.count("help"))
+    {
+        help();
+        cout << desc << endl;
+        return 1;
+    }
+
+    if (vm.count("port"))
+    {
+        httpPort = vm["port"].as<string>();
+    }
+
+    if (vm.count("comport"))
+    {
+        lightManager.setComPort(vm["comport"].as<string>());
     }
 
     lightManager.initializeComPort();
