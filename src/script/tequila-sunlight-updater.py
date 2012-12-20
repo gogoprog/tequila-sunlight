@@ -34,7 +34,9 @@ jobResults = {
     'disabled': 0,
     'aborted': 0,
     'yellow': 0,
-    'yellow_anime': 0
+    'yellow_anime': 0,
+    'aborted': 0,
+    'aborted_anime': 0
 }
 
 def sendCommand( cmd ):
