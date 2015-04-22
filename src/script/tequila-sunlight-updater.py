@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # tequila-sunlight-updater script :
 #   Retrieve jobs status and send command to the daemon
 
@@ -9,7 +9,7 @@ import urllib.request
 import urllib.error
 
 jenkinsUrl = "http://builder:8080/api/json/"
-daemonUrl = "http://localhost:8080/"
+daemonUrl = "http://localhost:1010/"
 
 print( "[tequila-sunlight] Starting update" )
 
@@ -36,7 +36,8 @@ jobResults = {
     'yellow': 0,
     'yellow_anime': 0,
     'aborted': 0,
-    'aborted_anime': 0
+    'aborted_anime': 0,
+    'notbuilt':0
 }
 
 def sendCommand( cmd ):
