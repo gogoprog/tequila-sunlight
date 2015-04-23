@@ -13,7 +13,7 @@ namespace po = boost::program_options;
 LightManager
     lightManager;
 string
-    httpPort("8080");
+    httpPort("1010");
 
 static void *callback(enum mg_event event, mg_connection *conn) 
 {
