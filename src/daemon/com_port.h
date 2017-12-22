@@ -80,7 +80,7 @@ private:
     {
         std::string str;
         str = code;
-        boost::asio::write(serial,boost::asio::buffer(str.c_str(),str.size()));
+        boost::asio::async_write(serial,boost::asio::buffer(str.c_str(),str.size()));
     }
 
     boost::asio::io_service
