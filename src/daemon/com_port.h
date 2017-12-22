@@ -41,7 +41,7 @@ public:
     ComPort & operator<<(const int code)
     {
         write(code);
-        boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+        /* boost::this_thread::sleep(boost::posix_time::milliseconds(500)); */
         return * this;
     }
 

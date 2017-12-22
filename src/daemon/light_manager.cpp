@@ -154,7 +154,10 @@ void LightManager::processCommand(const string & command)
 
     if(comPort.isOpen())
     {
+        cout << "isOpen yes"<< endl;
+        cout << "before reset " << current_lamp << code << extra_code;
         comPort << RESET << current_lamp << code << extra_code;
+        cout << "after reset " << current_lamp << code << extra_code;
     }
     else
     {
