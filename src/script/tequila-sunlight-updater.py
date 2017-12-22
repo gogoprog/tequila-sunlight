@@ -61,10 +61,10 @@ if buildStatusJson["jobs"]:
 
     runningJobs = jobResults['blue_anime'] + jobResults['red_anime'] + jobResults['yellow_anime']
 
-    if runningJobs > 0:
-        sendCommand("ORANGE/BLINK/" + str(20 - runningJobs))
-    else:
-        sendCommand("ORANGE/STOP_BLINK")
+#    if runningJobs > 0:
+#        sendCommand("ORANGE/BLINK/" + str(20 - runningJobs))
+#    else:
+#        sendCommand("ORANGE/STOP_BLINK")
 else:
     sys.exit(4)
 

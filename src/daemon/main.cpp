@@ -61,6 +61,8 @@ void httpJob()
 
 void lightJob()
 {
+    lightManager.initializeComPort();
+
     while(1)
     {
         lightManager.update(50);
@@ -113,7 +115,6 @@ int main(int argc, char *argv[])
         lightManager.setComPort(vm["comport"].as<string>());
     }
 
-    lightManager.initializeComPort();
 
     boost::thread
         http_job_thread(httpJob),

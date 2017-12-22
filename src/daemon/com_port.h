@@ -41,7 +41,6 @@ public:
     ComPort & operator<<(const int code)
     {
         write(code);
-        /* boost::this_thread::sleep(boost::posix_time::milliseconds(500)); */
         return * this;
     }
 
@@ -71,16 +70,11 @@ public:
     }
 
 private:
-    void write(const std::string & s)
-    {
-        boost::asio::write(serial,boost::asio::buffer(s.c_str(),s.size()));
-    }
-
     void write(const int code)
     {
         std::string str;
         str = code;
-        boost::asio::async_write(serial,boost::asio::buffer(str.c_str(),str.size()));
+        boost::asio::write(serial,boost::asio::buffer(str.c_str(),str.size()));
     }
 
     boost::asio::io_service

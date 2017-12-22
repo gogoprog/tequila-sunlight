@@ -56,11 +56,13 @@ void LightManager::setComPort(const string & com_port_string)
 
 void LightManager::initializeComPort()
 {
+    comPort = std::make_shared<ComPort>();
+
     cout << LOG_PREFIX << "Opening com port " << comPortString << endl;
 
-    comPort.open(comPortString);
+    comPort->open(comPortString);
 
-    if(comPort.isOpen())
+    if(comPort->isOpen())
     {
         cout << LOG_PREFIX << "Com port " << comPortString << " opened!" << endl;
     }
@@ -152,12 +154,9 @@ void LightManager::processCommand(const string & command)
         return;
     }
 
-    if(comPort.isOpen())
+    if(comPort->isOpen())
     {
-        cout << "isOpen yes"<< endl;
-        cout << "before reset " << current_lamp << code << extra_code;
-        comPort << RESET << current_lamp << code << extra_code;
-        cout << "after reset " << current_lamp << code << extra_code;
+        (*comPort) << RESET << current_lamp << code << extra_code;
     }
     else
     {

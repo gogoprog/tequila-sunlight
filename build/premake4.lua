@@ -8,6 +8,7 @@ solution "tequila-sunlight"
 		language "C++"
 		files { "../src/daemon/*.h", "../src/daemon/*.c*" }
 		links { "pthread", "boost_program_options", "boost_system", "boost_thread", "dl" }
+        buildoptions { "-std=c++11" }
 
 		configuration "debug"
 			defines { "DEBUG" }

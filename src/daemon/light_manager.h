@@ -1,5 +1,7 @@
 #include <boost/thread.hpp>
 #include <string>
+#include <memory>
+
 #include "com_port.h"
 
 using namespace std;
@@ -39,7 +41,7 @@ private:
         commandMutex;
     vector<string>
         commands;
-    ComPort
+    std::shared_ptr<ComPort>
         comPort;
     string
         comPortString;
